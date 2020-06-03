@@ -10,11 +10,11 @@ import (
 // We use struct tags to change the variable name in the JSON objects.
 // We can omit some fields that we don't want to return as part of the
 type Product struct {
-	ID          int     `json:"id"`
+	ID          int     `json:"id" validate:"required"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
-	Price       float32 `json:"price"`
-	SKU         string  `json:"sku"`
+	Price       float32 `json:"price" validate:"gt=0,required"`
+	SKU         string  `json:"sku" validate:"required,sku"`
 	CreatedOn   string  `json:"-"`
 	UpdatedOn   string  `json:"-"`
 	DeletedOn   string  `json:"-"`
@@ -50,28 +50,34 @@ func FindProduct(id int) (*Product, int, error) {
 	return nil, -1, &ProductError{"Product not found"}
 }
 
-func UpdateProduct(id int, prodToUpdate *Product) error {
-	_, pos, err := FindProduct(id)
+func UpdateProduct(prodToUpdate *Product) error {
+	_, pos, err := FindProduct(prodToUpdate.ID)
 
 	if err != nil {
 		return err
 	}
 
 	productList[pos] = prodToUpdate
-	// Make sure the id of the product passed in the request body is the same :).
-	// TODO: Maybe do some validation for it?
-	productList[pos].ID = id
 
 	return nil
-}
-
-func GetProducts() Products {
-	return productList
 }
 
 func AddProduct(p *Product) {
 	p.ID = getNextID()
 	productList = append(productList, p)
+}
+
+func DeleteProduct(id int) error {
+	_, pos, err := FindProduct(id)
+
+	if err != nil {
+		return err
+	}
+
+	// I know this is ridiculous, but this file is anyways for PoC purposes.
+	productList[pos] = nil
+
+	return nil
 }
 
 func getNextID() int {
@@ -89,13 +95,17 @@ func (p *Products) ToJSON(w io.Writer) error {
 	return e.Encode(p)
 }
 
+func GetProducts() Products {
+	return productList
+}
+
 var productList = Products{
 	&Product{
 		ID:          1,
 		Name:        "Latte",
 		Description: "Frothy milky coffee",
 		Price:       2.45,
-		SKU:         "abc323",
+		SKU:         "bcd-bcd-bcd",
 		CreatedOn:   time.Now().UTC().String(),
 		UpdatedOn:   time.Now().UTC().String(),
 	},
@@ -104,7 +114,7 @@ var productList = Products{
 		Name:        "Esspresso",
 		Description: "Short strong coffee without milk",
 		Price:       1.99,
-		SKU:         "fjd34",
+		SKU:         "abc-abc-abc",
 		CreatedOn:   time.Now().UTC().String(),
 		UpdatedOn:   time.Now().UTC().String(),
 	},

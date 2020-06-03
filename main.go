@@ -20,10 +20,6 @@ func main() {
 
 	ph := handlers.NewProducts(logger)
 
-	// Create a new Servemux
-	// This is a regular serveMux from the http module.
-	// serveMux := http.NewServeMux()
-
 	// Gorilla framework serveMux.
 	serveMux := mux.NewRouter()
 
@@ -37,8 +33,11 @@ func main() {
 	addProductsRouter.Use(ph.ValidateProductMiddleware)
 
 	putProductsRouter := serveMux.Methods(http.MethodPut).Subrouter()
-	putProductsRouter.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
+	putProductsRouter.HandleFunc("/products", ph.UpdateProduct)
 	putProductsRouter.Use(ph.ValidateProductMiddleware)
+
+	deleteProductsRouter := serveMux.Methods(http.MethodDelete).Subrouter()
+	deleteProductsRouter.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
 
 	server := &http.Server{
 		Addr:         ":9090",
