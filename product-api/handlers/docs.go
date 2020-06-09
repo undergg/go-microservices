@@ -27,8 +27,10 @@ type productsResponseWrapper struct {
 	Body data.Products
 }
 
+// No content is returned by this API endpoint
 // swagger:response noContentResponse
 type noContentsResponseWrapper struct {
+	// No content.
 }
 
 // swagger:parameters deleteProduct

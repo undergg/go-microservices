@@ -6,7 +6,7 @@ import (
 	"github.com/undergg/go-microservices-tutorial/product-api/data"
 )
 
-// swagger:route PUT /products/{id} products putProduct
+// swagger:route PUT /products products putProduct
 // Updates a product from the database.
 // responses:
 // 201: noContentResponse
