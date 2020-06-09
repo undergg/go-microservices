@@ -3,7 +3,8 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"simple-microservice1/data"
+
+	"github.com/undergg/go-microservices-tutorial/data"
 )
 
 func (p *Products) ValidateProductMiddleware(next http.Handler) http.Handler {
@@ -12,7 +13,7 @@ func (p *Products) ValidateProductMiddleware(next http.Handler) http.Handler {
 
 		prod := &data.Product{}
 		// In the r.body there is a JSON object of type Product.
-		err := prod.FromJSON(r.Body)
+		err := data.FromJSON(prod, r.Body)
 
 		if err != nil {
 			http.Error(rw, "Unable to unmarshal json", http.StatusBadRequest)

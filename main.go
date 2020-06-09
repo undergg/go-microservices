@@ -7,10 +7,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"simple-microservice1/handlers"
 	"time"
 
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
+	"github.com/undergg/go-microservices-tutorial/handlers"
 )
 
 func main() {
@@ -23,21 +24,27 @@ func main() {
 	// Gorilla framework serveMux.
 	serveMux := mux.NewRouter()
 
-	// Define subroutes.
-	getProductsRouter := serveMux.Methods(http.MethodGet).Subrouter()
-	getProductsRouter.HandleFunc("/products", ph.GetProducts)
+	// Define subroutes per HTTP Verb.
+	getRouter := serveMux.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/products", ph.GetProducts)
 
-	addProductsRouter := serveMux.Methods(http.MethodPost).Subrouter()
-	addProductsRouter.HandleFunc("/products", ph.AddProduct)
+	postRouter := serveMux.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/products", ph.AddProduct)
 	// Use Middleware to intercept the request and validate the JSON object of the request.
-	addProductsRouter.Use(ph.ValidateProductMiddleware)
+	postRouter.Use(ph.ValidateProductMiddleware)
 
-	putProductsRouter := serveMux.Methods(http.MethodPut).Subrouter()
-	putProductsRouter.HandleFunc("/products", ph.UpdateProduct)
-	putProductsRouter.Use(ph.ValidateProductMiddleware)
+	putRouter := serveMux.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/products", ph.UpdateProduct)
+	putRouter.Use(ph.ValidateProductMiddleware)
 
-	deleteProductsRouter := serveMux.Methods(http.MethodDelete).Subrouter()
-	deleteProductsRouter.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
+	deleteRouter := serveMux.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
+
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+
+	getRouter.Handle("/docs", sh)
+	getRouter.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	server := &http.Server{
 		Addr:         ":9090",
