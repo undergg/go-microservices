@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/undergg/go-microservices-tutorial/product-api/sdk/client/products"
@@ -10,16 +9,13 @@ import (
 )
 
 func TestOurClient(t *testing.T) {
-
+	// Default host is "localhost" which (since its http) it listens to port 80.
 	cfg := client.DefaultTransportConfig().WithHost("localhost:9090")
 	c := client.NewHTTPClientWithConfig(nil, cfg)
 	params := products.NewListProductsParams()
-	prod, err := c.Products.ListProducts(params)
+	_, err := c.Products.ListProducts(params)
 
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	fmt.Printf("%#v", prod.GetPayload()[0])
-	t.Fail()
 }
