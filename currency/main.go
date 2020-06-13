@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/grpc/reflection"
 
-	"github.com/hashicorp/go-hclog"
+	hclog "github.com/hashicorp/go-hclog"
 	"github.com/undergg/go-microservices-tutorial/currency/protos/currency"
 	"github.com/undergg/go-microservices-tutorial/currency/server"
 	"google.golang.org/grpc"

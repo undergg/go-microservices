@@ -18,11 +18,12 @@ require (
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/spf13/viper v1.7.0 // indirect
 	github.com/undergg/go-microservices-tutorial v0.0.0-20200609005858-c24d34bb0206
+	github.com/undergg/go-microservices-tutorial/currency v0.0.0-20200611032149-8ed6e37da211
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
-	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	golang.org/x/tools v0.0.0-20200604183345-4d5ea46c79fe // indirect
+	google.golang.org/grpc v1.29.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 )

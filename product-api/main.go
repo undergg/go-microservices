@@ -11,7 +11,9 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
+	protos "github.com/undergg/go-microservices-tutorial/currency/protos/currency"
 	"github.com/undergg/go-microservices-tutorial/product-api/handlers"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -19,7 +21,19 @@ func main() {
 
 	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
 
-	ph := handlers.NewProducts(logger)
+	// grpc.WithInsecure ---> HTTP/2 with no TLS
+	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer conn.Close()
+
+	// create the Currency Client.
+	cc := protos.NewCurrencyClient(conn)
+
+	ph := handlers.NewProducts(logger, cc)
 
 	// Gorilla framework serveMux.
 	serveMux := mux.NewRouter()
@@ -27,6 +41,7 @@ func main() {
 	// Define subroutes per HTTP Verb.
 	getRouter := serveMux.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/products", ph.GetProducts)
+	getRouter.HandleFunc("/products/{id:[0-9]+}", ph.GetSingleProduct)
 
 	postRouter := serveMux.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/products", ph.AddProduct)

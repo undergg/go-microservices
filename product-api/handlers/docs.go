@@ -33,7 +33,7 @@ type noContentsResponseWrapper struct {
 	// No content.
 }
 
-// swagger:parameters deleteProduct
+// swagger:parameters deleteProduct listSingleProduct
 type productIDParameterWrapper struct {
 	// The id of the product to delete from the database.
 	// in: path
