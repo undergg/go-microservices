@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	protos "github.com/undergg/go-microservices-tutorial/currency/protos/currency"
+	"github.com/undergg/go-microservices-tutorial/currency/protos/currency"
 	"github.com/undergg/go-microservices-tutorial/product-api/data"
 )
 
@@ -49,9 +49,9 @@ func (p *Products) GetSingleProduct(rw http.ResponseWriter, r *http.Request) {
 		data.ToJSON(&GenericError{Message: err.Error()}, rw)
 	}
 
-	rr := &protos.RateRequest{
-		Base:        protos.Currencies_EUR,
-		Destination: protos.Currencies_GBP,
+	rr := &currency.RateRequest{
+		Base:        currency.Currencies_EUR,
+		Destination: currency.Currencies_GBP,
 	}
 
 	if err != nil {
